@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>ChatGPT ওয়েব অ্যাপ</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #chat-box { width: 100%; height: 300px; border: 1px solid #ccc; padding: 10px; overflow-y: scroll; margin-bottom: 10px; }
+        #message { width: 80%; padding: 10px; }
+        #send-btn { padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>ChatGPT ওয়েব অ্যাপ</h1>
+    <div id="chat-box"></div>
+    <form id="chat-form">
+        <input type="text" id="message" placeholder="আপনার প্রশ্ন লিখুন..." required>
+        <button type="submit" id="send-btn">পাঠান</button>
+    </form>
+
+    <script>
+        const form = document.getElementById('chat-form');
+        const chatBox = document.getElementById('chat-box');
+        const messageInput = document.getElementById('message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userMessage = messageInput.value;
+            chatBox.innerHTML += `<p><strong>আপনি:</strong> ${userMessage}</p>`;
+            messageInput.value = "";
+
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ message: userMessage })
+            });
+            const data = await response.json();
+            chatBox.innerHTML += `<p><strong>ChatGPT:</strong> ${data.response}</p>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    </script>
+</body>
+</html>
